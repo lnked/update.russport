@@ -23,11 +23,13 @@
                 </colgroup>
                 <thead>
                     <tr>
-                        <th><input type="checkbox" name="changeall" class="j-change-all" checked></th>
+                        <th><input type="checkbox" class="j-change-all" checked></th>
                         <th>Номенклатура</th>
+                        <!--
                         <th>Начальный остаток</th>
                         <th>Приход</th>
                         <th>Расход</th>
+                        -->
                         <th>Остаток</th>
                     </tr>
                 </thead>
@@ -40,6 +42,7 @@
                             <span class="clipboard__text"><?php echo $row['name']; ?></span>
                         </span>
                     </td>
+                    <!--
                     <td>
                         <span class="price j-clipboard" data-clipboard="<?php echo $row['opening']; ?>">
                             <span class="price__text">
@@ -61,6 +64,7 @@
                             </span>
                         </span>
                     </td>
+                    -->
                     <td>
                         <span class="price j-clipboard" data-clipboard="<?php echo $row['balance']; ?>">
                             <span class="price__text">
@@ -71,6 +75,10 @@
                 </tr>
                 <?php endforeach; ?>
             </table>
+
+            <div class="form__row">
+                <input name="discount" value="0">
+            </div>
 
             <button class="submit" type="submit">Обновить</button>
         </form>

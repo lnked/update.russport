@@ -16,15 +16,14 @@
                 <colgroup>
                     <col width="18">
                     <col>
-                    <col width="100">
-                    <col width="120">
+                    <col width="150">
                 </colgroup>
                 <thead>
                     <tr>
-                        <th><input type="checkbox" name="changeall" class="j-change-all"></th>
+                        <th><input type="checkbox" class="j-change-all"></th>
                         <th>Номенклатура</th>
                         <th>Стоимость</th>
-                        <th>Фото</th>
+                        <!-- <th>Фото</th> -->
                     </tr>
                 </thead>
                 <?php foreach ($data as $key => $row) : ?>
@@ -42,6 +41,7 @@
                             </span>
                         </span>
                     </td>
+                    <!-- 
                     <td>
                         <div class="upload j-upload">
                             <label class="upload__form j-upload-form">
@@ -52,9 +52,14 @@
                             <span class="upload__list j-upload-list"></span>
                         </div>
                     </td>
+                    -->
                 </tr>
                 <?php endforeach; ?>
             </table>
+
+            <div class="form__row">
+                <input name="discount" value="0">
+            </div>
 
             <button class="submit" type="submit">Обновить</button>
         </form>
