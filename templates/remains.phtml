@@ -8,6 +8,7 @@
 <body>
     
 <div class="layout">
+    <?php require 'navigation.phtml'; ?>
     <div class="layout__inner">
         <?php if (!empty($data)) : ?>
         <form action="/update/update_prices" method="POST" enctype="multipart/form-data">

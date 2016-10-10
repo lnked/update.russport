@@ -5,30 +5,37 @@
     <title>RS</title>
     <link href="/css/main.css" rel="stylesheet">
 </head>
-<body>
+<body class="main-page">
 
-<div class="layout">
-    <div class="layout__inner">
-        <h1>Update</h1>
+<div class="layout _main">
+    <div class="layout__inner _main">
         
-        <h2>Цены</h2>
-        <form action="/api/update_prices" method="post" enctype="multipart/form-data">
-            <input type="file" name="file">
-            <button type="submit">Загрузить</button>
-        </form>
+        <div class="layout__middle">
+            <fieldset class="fieldset">
+                <legend>Обновить цены</legend>
+                <form action="/api/update_prices" method="post" enctype="multipart/form-data">
+                    <input type="file" name="file">
+                    <button type="submit">Загрузить</button>
+                </form>
+            </fieldset>
+            
+            <fieldset class="fieldset">
+                <legend>Обновить приход</legend>
+                <form action="/api/recount" method="post" enctype="multipart/form-data">
+                    <input type="file" name="file">
+                    <button type="submit">Загрузить</button>
+                </form>
+            </fieldset>
+            
+            <fieldset class="fieldset">
+                <legend>Обновить остатки</legend>
+                <form action="/api/remains" method="post" enctype="multipart/form-data">
+                    <input type="file" name="file">
+                    <button type="submit">Загрузить</button>
+                </form>
+            </fieldset>
+        </div>
 
-        <h2>Приход</h2>
-        <form action="/api/recount" method="post" enctype="multipart/form-data">
-            <input type="file" name="file">
-            <button type="submit">Загрузить</button>
-        </form>
-
-        <h2>Остатки</h2>
-        <form action="/api/remains" method="post" enctype="multipart/form-data">
-            <input type="file" name="file">
-            <button type="submit">Загрузить</button>
-        </form>
-        
     </div>
 </div>
 

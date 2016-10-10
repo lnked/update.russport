@@ -1,3 +1,7 @@
+html, body {
+    height: 100%;
+}
+
 body {
     width: 100%;
     padding: 0;
@@ -5,6 +9,10 @@ body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #aaa;
     font-size: 17px;
+}
+
+body.main-page {
+    overflow: hidden;
 }
 
 h1 {
@@ -17,13 +25,62 @@ h1 {
 
 .layout {
     width: 100%;
-    padding: 20px 0 40px;
     overflow: hidden;
+    padding: 45px 20px 40px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
-.layout__inner {
+.layout__inner,
+.navigation__inner {
     margin: 0 auto;
     max-width: 1260px;
+}
+
+.layout._main,
+.layout__inner._main {
+    height: 100%;
+}
+
+.layout__inner._main:before {
+    content: "";
+    height: 100%;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.layout__middle {
+    width: 100%;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.navigation {
+    width: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 30px;
+    z-index: 100;
+    padding: 0 20px;
+    text-align: center;
+    line-height: 26px;
+    background-color: #eee;
+    border-bottom: 1px solid #ddd;
+}
+
+.navigation__link {
+    font-size: 14px;
+    color: #000;
+    line-height: 1;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.fieldset {
+    padding: 15px;
+    margin-bottom: 40px;
 }
 
 .submit {
