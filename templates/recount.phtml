@@ -1,14 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <title>Update page</title>
-    <link href="/css/main.css" rel="stylesheet">
-</head>
+<?php require 'partials/_meta.phtml'; ?>
+
 <body>
 
 <div class="layout">
-    <?php require 'navigation.phtml'; ?>
+    <?php require 'partials/_navigation.phtml'; ?>
     <div class="layout__inner">
         <?php if (!empty($data)) : ?>
         <form action="/update/recount" method="POST" enctype="multipart/form-data">
@@ -21,16 +16,16 @@
                 </colgroup>
                 <thead>
                     <tr>
-                        <th><input type="checkbox" class="j-change-all"></th>
+                        <th><input type="checkbox" class="j-change-all" checked></th>
                         <th>Номенклатура</th>
                         <th>Кол-во</th>
                         <th>Стоимость</th>
                     </tr>
                 </thead>
                 <tbody>
-                <?php foreach ($data as $key => $row) : ?>
+                <?php foreach ($data as $row) : ?>
                 <tr>
-                    <td><input type="checkbox" name="site[<?=$key;?>]" class="j-change-item"></td>
+                    <td><input type="checkbox" name="change[<?=$row['number'];?>]" value="<?=$row['number'];?>" class="j-change-item" checked></td>
                     <td>
                         <span class="clipboard j-clipboard" data-clipboard="<?php echo $row['name']; ?>">
                             <span class="clipboard__text"><?php echo $row['name']; ?></span>

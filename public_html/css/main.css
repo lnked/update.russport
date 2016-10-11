@@ -15,6 +15,10 @@ body.main-page {
     overflow: hidden;
 }
 
+button {
+    cursor: pointer;
+}
+
 h1 {
     color: #719e40;
     letter-spacing: -3px;
@@ -99,6 +103,45 @@ h1 {
     outline: none;
 }
 
+.status {
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+    vertical-align: middle;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    -webkit-background-size: 18px 18px;
+    background-size: 18px 18px;
+}
+
+.status._fail {
+    background-image: url(/images/fail.svg);
+}
+
+.status._success {
+    background-image: url(/images/success.svg);
+}
+
+.link {
+    width: 70px;
+    color: #fff;
+    height: 18px;
+    font-size: 12px;
+    line-height: 18px;
+    text-align: center;
+    display: inline-block;
+    vertical-align: middle;
+    text-decoration: none;
+}
+
+.link._check {
+    background-color: #5C5CFF;
+}
+
+.link._add {
+    background-color: #5CAD5C;
+}
+
 table {
     width: 100%;
     margin-bottom: 10px;
@@ -109,6 +152,11 @@ table th,
 table td {
     padding: 10px;
     border: 1px solid #eee;
+}
+
+table th._tac,
+table td._tac {
+    text-align: center;
 }
 
 table th {

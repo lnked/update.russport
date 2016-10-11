@@ -19,12 +19,83 @@ if (!function_exists('__')) {
 
 function array_combine_($keys, $values)
 {
-    $result = array();
+    $result = [];
     foreach ($keys as $i => $k) {
         $result[$k][] = isset($values[$i]) ? $values[$i] : '';
     }
     array_walk($result, create_function('&$v', '$v = (count($v) == 1)? array_pop($v): $v;'));
     return    $result;
+}
+
+function roundPrice($price = 0, $increments = 5)
+{
+    $increments = 1 / $increments; 
+    return (ceil($price * $increments) / $increments);
+}
+
+function updateProduct($product = [], $data = [], $discount = 0)
+{
+    if (!empty($product))
+    {
+        $price = floatval($data['price']);
+
+        $price = $price-$price*$discount/100;
+        
+        $discount_price = roundPrice($price);
+
+        $price = sprintf('%02d.000000', $discount_price);
+
+        Q("UPDATE `#_product` SET `price`=?s, active=1, `date_upd`=NOW() WHERE `id_product`=?i LIMIT 1", [
+            $price,
+            $product['id_product']
+        ]);
+
+        return $discount_price;
+    }
+
+    return false;
+}
+
+function distinctQuery($words = [], $current = 0)
+{
+    if ($current == (count($words) - 1))
+    {
+        return Qb("SELECT DISTINCT `id_product` FROM `#_product_lang` AS `t?i` WHERE `t?i`.`name` LIKE '%?e%'", [
+            $current,
+            $current,
+            $words[$current]
+        ]);
+    }
+
+    return Qb("SELECT DISTINCT `id_product` FROM `#_product_lang` AS `t?i` WHERE `t?i`.`name` LIKE '%?e%' AND `id_product` IN (?e)", [
+        $current,
+        $current,
+        $words[$current],
+        distinctQuery($words, $current + 1)
+    ]);
+}
+
+function makeQuery($name = '')
+{
+    $words = preg_split('/\ +/', $name, -1, PREG_SPLIT_NO_EMPTY);
+    return preg_replace('/^SELECT DISTINCT `id_product`/', 'SELECT DISTINCT `id_product`, `link_rewrite`, `name`', distinctQuery($words)) . ' LIMIT 1';
+}
+
+function combine($data = [], $sample = [])
+{
+    return array_intersect_key($data, $sample);
+}
+
+function calculate($data = [])
+{
+    if (!empty($data)) {
+        foreach ($data as $key => &$val)
+        {
+            $val['number'] = $key;
+        }
+    }
+
+    return $data;
 }
 
 function prepare($data = [], $intersect = [])
@@ -40,6 +111,7 @@ function prepare($data = [], $intersect = [])
             if ($name == 'name')
             {
                 $value = str_replace(array(' , шт', ', шт'), '', $value);
+                $value = str_replace('  ', ' ', $value);
             }
 
             if ($name == 'count')

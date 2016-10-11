@@ -1,17 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <title>Update page</title>
-    <link href="/css/main.css" rel="stylesheet">
-</head>
+<?php require 'partials/_meta.phtml'; ?>
+
 <body>
     
 <div class="layout">
-    <?php require 'navigation.phtml'; ?>
+    <?php require 'partials/_navigation.phtml'; ?>
     <div class="layout__inner">
         <?php if (!empty($data)) : ?>
-        <form action="/update/update_prices" method="POST" enctype="multipart/form-data">
+        <form action="/update/remains" method="POST" enctype="multipart/form-data">
             <table class="table" id="table">
                 <colgroup>
                     <col width="18">
@@ -34,9 +29,11 @@
                     </tr>
                 </thead>
 
-                <?php foreach ($data as $key => $row) : ?>
+                <?php foreach ($data as $row) : ?>
                 <tr>
-                    <td><input type="checkbox" name="site[<?=$key;?>]" class="j-change-item" checked></td>
+                    <td>    
+                        <input type="checkbox" name="change[<?=$row['number'];?>]" value="<?=$row['number'];?>" class="j-change-item" checked>
+                    </td>
                     <td>
                         <span class="clipboard j-clipboard" data-clipboard="<?php echo $row['name']; ?>">
                             <span class="clipboard__text"><?php echo $row['name']; ?></span>
@@ -72,6 +69,18 @@
                             </span>
                         </span>
                     </td>
+                    <!-- 
+                    <td>
+                        <div class="upload j-upload">
+                            <label class="upload__form j-upload-form">
+                                <span class="upload__title">Загрузить</span>
+                                <input name="file[<?php echo $row['number']; ?>]" type="file" class="upload__input j-upload-input" multiple>
+                            </label>
+                            
+                            <span class="upload__list j-upload-list"></span>
+                        </div>
+                    </td>
+                    -->
                 </tr>
                 <?php endforeach; ?>
             </table>

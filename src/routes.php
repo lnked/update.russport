@@ -10,21 +10,17 @@ $client->addServer('localhost', 11211);
 $cache = new \MatthiasMullie\Scrapbook\Adapters\Memcached($client);
 
 $app->get('/', function (Request $request, Response $response, $args) use ($cache) {
-    $this->logger->info("Slim-Skeleton '/' route");
-
-    // Render index view
     return $this->renderer->render($response, 'index.phtml', $args);
 });
 
-$app->get('/update', function (Request $request, Response $response) use ($cache) {
+$app->get('/prices', function (Request $request, Response $response) use ($cache) {
     $data = [];
 
-    if ($cache->get('data')) {
-        $data = $cache->get('data');
+    if ($cache->get('prices')) {
+        $data = $cache->get('prices');
     }
-    
-    // $this->logger->info("Slim-Skeleton '/' route");
-    return $this->renderer->render($response, 'update.phtml', $data);
+
+    return $this->renderer->render($response, 'prices.phtml', $data);
 });
 
 $app->get('/recount', function (Request $request, Response $response) use ($cache) {
@@ -47,14 +43,79 @@ $app->get('/remains', function (Request $request, Response $response) use ($cach
     return $this->renderer->render($response, 'remains.phtml', $data);
 });
 
+$app->post('/update/prices', function (Request $request, Response $response) use ($app, $cache) {
+    $data = $request->getParsedBody();
+
+    if (!empty($data))
+    {
+        $change = [];
+        $prices = [];
+        $discount = 0;
+
+        if (isset($data['discount']))
+        {
+            $discount = $data['discount'];
+        }
+
+        if (isset($data['change']))
+        {
+            $change = $data['change'];
+        }
+
+        if ($cache->get('prices')) {
+            $prices = $cache->get('prices');
+        }
+
+        $prices = combine($prices, $change);
+        
+        unset($_SESSION['update']);
+
+        foreach ($prices as $product)
+        {
+            $status = 0;
+            $result = Q(makeQuery($product['name']))->row();
+            $id_product = 0;
+
+            if (!empty($result))
+            {
+                $status = 1;
+                $category = 'sportivnoe-pitanie';
+
+                $id_product = $result['id_product'];
+                $discount_price = updateProduct($result, $product, $discount);
+
+                $link = 'http://www.rusport23.ru/' . $category . '/' . $id_product . '-' . $result['link_rewrite'] . '.html';
+            }
+
+            $_SESSION['update']['prices'][$product['number']] = [
+                'id'                =>  $id_product,
+                'status'            =>  $status,
+                'link'              =>  $link,
+                'discount_price'    =>  $discount_price
+            ];
+        }
+
+        // exit(__($_SESSION['update']));
+
+        return $response->withStatus(302)->withHeader('Location', '/prices');
+    }
+});
+
 $app->post('/update/recount', function (Request $request, Response $response) use ($app, $cache) {
     $data = $request->getParsedBody();
     $files = $request->getUploadedFiles();
+
+    // Продукты тут
+    // ps_product - name id_product price (2376.000000) active
+    // ps_product_lang - name id_product
+
+    // ps_layered_price_index - id_product price_min price_max
+
     __($data);
     exit(__($files));
 });
 
-$app->post('/update/update_prices', function (Request $request, Response $response) use ($app, $cache) {
+$app->post('/update/remains', function (Request $request, Response $response) use ($app, $cache) {
     $data = $request->getParsedBody();
     $files = $request->getUploadedFiles();
     __($data);
@@ -104,13 +165,13 @@ $app->post('/api/remains', function (Request $request, Response $response) use (
             }
         }
 
-        $cache->set('remains', $data);
+        $cache->set('remains', calculate($data));
 
         return $response->withStatus(302)->withHeader('Location', '/remains');
     }
 });
 
-$app->post('/api/update_prices', function (Request $request, Response $response) use ($app, $cache) {
+$app->post('/api/prices', function (Request $request, Response $response) use ($app, $cache) {
     $data = $request->getParsedBody();
     $files = $request->getUploadedFiles();
     
@@ -138,17 +199,16 @@ $app->post('/api/update_prices', function (Request $request, Response $response)
             if (array_keys_exists([2, 4, 21, 24, 26], array_keys($sheet))) {
                 
                 $data[] = prepare($sheet, [
-                    2 => 'number',
-                    4 => 'name',
-                    21 => 'price' 
+                    4   => 'name',
+                    21  => 'price' 
                 ]);
 
             }
         }
 
-        $cache->set('data', $data);
+        $cache->set('prices', calculate($data));
 
-        return $response->withStatus(302)->withHeader('Location', '/update');
+        return $response->withStatus(302)->withHeader('Location', '/prices');
 
         
         exit(__($data));
@@ -197,7 +257,7 @@ $app->post('/api/recount', function (Request $request, Response $response) use (
             }
         }
         
-        $cache->set('recount', $data);
+        $cache->set('recount', calculate($data));
 
         // exit(__($data));
         // exit(__($sheets));
